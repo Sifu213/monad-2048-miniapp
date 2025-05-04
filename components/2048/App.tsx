@@ -4,8 +4,18 @@ import { Dialog, Transition } from '@headlessui/react';
 import useMovement from './hooks/useMovement';
 import useLocalStorage from './hooks/useLocalStorage';
 import { FarcasterActions } from "@/components/Home/FarcasterActions";
-
+import { APP_URL } from "@/lib/constants";
 import { useMiniAppContext } from "@/hooks/use-miniapp-context";
+
+import { parseEther } from "viem";
+import { monadTestnet } from "viem/chains";
+import {
+  useAccount,
+  useDisconnect,
+  useSendTransaction,
+  useSwitchChain,
+} from "wagmi";
+
 
 import {
   TileMeta,
@@ -39,6 +49,13 @@ function App({ initialTiles, noSpawnNewTile }: Props) {
   const [friendlySpawning, setFriendlySpawning] = useState(true);
 
   const { context } = useMiniAppContext();
+  const { actions } = useMiniAppContext();
+
+  const { isEthProviderAvailable } = useMiniAppContext();
+  const { isConnected, address, chainId } = useAccount();
+  const { disconnect } = useDisconnect();
+  const { data: hash, sendTransaction } = useSendTransaction();
+  const { switchChain } = useSwitchChain();
 
   type Direction = 'UP' | 'DOWN' | 'LEFT' | 'RIGHT';
   function slideHandler(dir: Direction) {
@@ -301,6 +318,21 @@ function App({ initialTiles, noSpawnNewTile }: Props) {
                   >
                     Game Over!
                   </div>
+
+                  <button
+                    className={`text-white px-2 sm:px-4 py-1 sm:py-2 rounded-[3px] font-bold bg-purple-600 hover:bg-purple-700 text-white font-bold
+                      text-md cursor-pointer w-fit self-center mb-2`}
+                    type="button"
+                    onClick={() =>
+                      actions?.composeCast({
+                        text: `I just made the score of ${score} on the Monad 2048 MiniApp!. Can you break it?`,
+                        embeds: [`${APP_URL}`],
+                      })
+                    }
+                  >
+                    Cast my score
+                  </button>
+
                   <NewGameButton
                     setGameOver={setGameOver}
                     setTilesArr={setTilesArr}
@@ -352,7 +384,7 @@ function App({ initialTiles, noSpawnNewTile }: Props) {
         </div>
       </div>
 
-      <div className="mt-2 sm:mt-10">
+      <div className="mt-2 sm:mt-10 ">
         <div>
           <div
             className={`absolute transform -translate-x-1/2 left-1/2 
