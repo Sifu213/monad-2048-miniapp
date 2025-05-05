@@ -520,7 +520,7 @@ const link = "https://monad-testnet.socialscan.io/tx/" + hash
         </div>
       </div>
       <footer
-        className="mx-auto text-sm sm:text-md  text-center test
+        className="text-white mx-auto text-sm sm:text-md  text-center test
         px-4 sm:px-0" 
       >
         2048 For Monad made by  
