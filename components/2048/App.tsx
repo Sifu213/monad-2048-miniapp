@@ -387,7 +387,7 @@ const link = "https://monad-testnet.socialscan.io/tx/" + hash
 
                   <button
                     className="w-1/2 text-white px-2 sm:px-4 py-1 sm:py-2 rounded-[3px] font-bold bg-purple-600 hover:bg-purple-700 text-white font-bold
-                      text-md cursor-pointer w-fit self-center mb-2"
+                      text-md cursor-pointer self-center mb-2"
                     type="button"
                     onClick={() =>
                       actions?.composeCast({
@@ -401,7 +401,7 @@ const link = "https://monad-testnet.socialscan.io/tx/" + hash
 
                   <button
                     className="w-1/2 text-white px-2 sm:px-4 py-1 sm:py-2 rounded-[3px] font-bold bg-purple-600 hover:bg-purple-700 text-white font-bold
-                      text-md cursor-pointer w-fit self-center mb-2"
+                      text-md cursor-pointer self-center mb-2"
                     type="button" 
                     onClick={handleMint}  
                     disabled={isPending || isSubmitting || isConfirming || hasMinted }                                     
