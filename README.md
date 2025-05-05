@@ -1,1 +1,1 @@
-# Monad Farcaster MiniApp Template
+# 2048 Monad MiniApp
