@@ -53,7 +53,7 @@
 
 footer {
   margin-top: calc(var(--grid-size) + (2 * var(--grid-gap)) + 80px);
-  width: calc(var(--grid-size) + (2 * var(--grid-gap)));
+  
 }
 
 .grid-center {

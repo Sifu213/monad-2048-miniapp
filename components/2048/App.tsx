@@ -315,7 +315,7 @@ const link = "https://monad-testnet.socialscan.io/tx/" + hash
   });
 
   return (
-    <div>
+    <div className="flex flex-col items-center justify-center w-full max-w-md mx-auto   ">
       <Transition.Root show={gameOver} as={Fragment}>
         <Dialog
           as="div"
@@ -430,7 +430,7 @@ const link = "https://monad-testnet.socialscan.io/tx/" + hash
           </div>
         </Dialog>
       </Transition.Root>
-      <div className="w-grid-full mx-auto mt-2 px-4 sm:px-0">
+      <div className="w-full mt-2 sm:px-0">
         <div className="flex justify-between items-center p-2 rounded-[20px] bg-[#2b2670]">
           
 
@@ -469,12 +469,11 @@ const link = "https://monad-testnet.socialscan.io/tx/" + hash
       </div>
 
 
-      <div className="mt-2 sm:mt-10 ">
+      <div className="w-full mt-2 sm:mt-10 ">
         <div>
           <div
-            className={`absolute transform -translate-x-1/2 left-1/2 
-            grid-border rounded-md`}
-            style={{ backgroundColor: '#2b2670' }}
+            className="absolute transform -translate-x-1/2 left-1/2 
+            grid-border rounded-md bg-[#2b2670]"           
           />
         </div>
 
@@ -505,7 +504,7 @@ const link = "https://monad-testnet.socialscan.io/tx/" + hash
             )
           )}
         </div>
-        <div className="grid-center" style={{ backgroundColor: '#2b2670' }}>
+        <div className=" grid-center bg-[#2b2670]">
           {[0, 1, 2, 3].map((rowIdx) => (
             <div className="flex justify-center grid-col" key={rowIdx}>
               {[0, 1, 2, 3].map((colIdx) => (
@@ -519,15 +518,9 @@ const link = "https://monad-testnet.socialscan.io/tx/" + hash
           ))}
         </div>
       </div>
-      <footer
-        className="text-white mx-auto text-sm sm:text-md  text-center test
-        px-4 sm:px-0" 
-      >
+      <footer className="w-full text-white mx-auto text-sm sm:text-md text-center test px-4 sm:px-0">
         2048 For Monad made by  
-        <a
-          href="https://x.com/sifu_lam"
-          className="underline font-semibold ml-1"
-        >
+        <a href="https://x.com/sifu_lam" className="underline font-semibold ml-1">
            Sifu_lam
         </a>
         .
