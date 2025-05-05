@@ -34,6 +34,7 @@ import validBoard from './Grid';
 import { flatIdx, matrixIndices } from './utils/coordinateUtils';
 import ScoreBox from './components/ScoreBox';
 import NewGameButton from './components/NewGameButton';
+import NewGameButton2 from './components/NewGameButton2';
 import MyToggle from './components/MyToggle';
 
 interface Props {
@@ -369,7 +370,7 @@ const link = "https://monad-testnet.socialscan.io/tx/" + hash
                 overflow-hidden transform transition-all 
                 -my-16 sm:my-0 text-center`}
               >
-                <div className="flex flex-col mt-64">
+                <div className="flex flex-col mt-32">
                   <div
                     className="text-7xl sm:text-8xl mb-10 sm:mb-32
                   font-bold text-[#2b2670] opacity-100"
@@ -385,8 +386,8 @@ const link = "https://monad-testnet.socialscan.io/tx/" + hash
                   </div>
 
                   <button
-                    className={`text-white px-2 sm:px-4 py-1 sm:py-2 rounded-[3px] font-bold bg-purple-600 hover:bg-purple-700 text-white font-bold
-                      text-md cursor-pointer w-fit self-center mb-2`}
+                    className="w-1/2 text-white px-2 sm:px-4 py-1 sm:py-2 rounded-[3px] font-bold bg-purple-600 hover:bg-purple-700 text-white font-bold
+                      text-md cursor-pointer w-fit self-center mb-2"
                     type="button"
                     onClick={() =>
                       actions?.composeCast({
@@ -399,8 +400,8 @@ const link = "https://monad-testnet.socialscan.io/tx/" + hash
                   </button>
 
                   <button
-                    className={`text-white px-2 sm:px-4 py-1 sm:py-2 rounded-[3px] font-bold bg-purple-600 hover:bg-purple-700 text-white font-bold
-                      text-md cursor-pointer w-fit self-center mb-2`}
+                    className="w-1/2 text-white px-2 sm:px-4 py-1 sm:py-2 rounded-[3px] font-bold bg-purple-600 hover:bg-purple-700 text-white font-bold
+                      text-md cursor-pointer w-fit self-center mb-2"
                     type="button" 
                     onClick={handleMint}  
                     disabled={isPending || isSubmitting || isConfirming || hasMinted }                                     
@@ -418,7 +419,7 @@ const link = "https://monad-testnet.socialscan.io/tx/" + hash
                   )}
                  
 
-                  <NewGameButton
+                  <NewGameButton2
                     setGameOver={setGameOver}
                     setTilesArr={setTilesArr}
                     setScore={setScore}
@@ -520,7 +521,7 @@ const link = "https://monad-testnet.socialscan.io/tx/" + hash
       </div>
       <footer className="w-full text-white mx-auto text-sm sm:text-md text-center test px-4 sm:px-0">
         2048 For Monad made by  
-        <a href="https://x.com/sifu_lam" className="underline font-semibold ml-1">
+        <a href="https://warpcast.com/sifulam" className="underline font-semibold ml-1">
            Sifu_lam
         </a>
         .
