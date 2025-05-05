@@ -1,5 +1,5 @@
 /* eslint-disable react/require-default-props */
-import React, { useState, Fragment, useRef } from 'react';
+import React, { useState, useEffect, Fragment, useRef } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import useMovement from './hooks/useMovement';
 import useLocalStorage from './hooks/useLocalStorage';
@@ -7,14 +7,17 @@ import { FarcasterActions } from "@/components/Home/FarcasterActions";
 import { APP_URL } from "@/lib/constants";
 import { useMiniAppContext } from "@/hooks/use-miniapp-context";
 
-import { parseEther } from "viem";
+import { parseEther} from "viem";
 import { monadTestnet } from "viem/chains";
 import {
   useAccount,
   useDisconnect,
   useSendTransaction,
   useSwitchChain,
+  useWriteContract ,
+  useWaitForTransactionReceipt,
 } from "wagmi";
+import { NFT_CONTRACT_ADDRESS, NFT_CONTRACT_ABI } from "./lib/constants";
 
 
 import {
@@ -54,8 +57,63 @@ function App({ initialTiles, noSpawnNewTile }: Props) {
   const { isEthProviderAvailable } = useMiniAppContext();
   const { isConnected, address, chainId } = useAccount();
   const { disconnect } = useDisconnect();
-  const { data: hash, sendTransaction } = useSendTransaction();
   const { switchChain } = useSwitchChain();
+  
+ 
+  const {
+    data: hash, // infos sur la transaction envoyée, ex { hash }      
+    isPending,       // true pendant la demande de signature (wallet)
+    isSuccess,       // true si la TX a bien été envoyée, en attente de minage
+    writeContract,           // la fonction qui déclenche l'envoi
+    error,
+} = useWriteContract();
+
+const { isLoading: isConfirming, isSuccess: isConfirmed } =
+useWaitForTransactionReceipt({
+  hash,
+});
+
+const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+const [claimMessage, setClaimMessage] = useState<string | null>(null);
+const [hasMinted, setHasMinted] = useState(false);
+const link = "https://monad-testnet.socialscan.io/tx/" + hash
+
+
+  const handleMint = async () => {
+    if (!address) {
+        setClaimMessage('Please connect your wallet.');
+        return;
+    }
+    if (chainId !== monadTestnet.id) {
+      await switchChain?.({ chainId: monadTestnet.id });
+    }
+
+    setIsSubmitting(true);
+    try {
+            await writeContract({
+                address: NFT_CONTRACT_ADDRESS,
+                abi: NFT_CONTRACT_ABI,
+                functionName: 'mintNFT',
+                args: [address, score],
+            });
+
+            console.log('Transaction sent');
+            setHasMinted(true);
+
+        } catch (err) {
+            console.error('Mint transaction failed:', err);
+            setClaimMessage('Minting failed. Please try again.');
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    useEffect(() => {
+      if (!gameOver) {
+        setHasMinted(false);
+        setClaimMessage(null);
+      }
+    }, [gameOver]);
 
   type Direction = 'UP' | 'DOWN' | 'LEFT' | 'RIGHT';
   function slideHandler(dir: Direction) {
@@ -319,6 +377,13 @@ function App({ initialTiles, noSpawnNewTile }: Props) {
                     Game Over!
                   </div>
 
+                  <div
+                    className="text-4xl sm:text-5xl mb-10 sm:mb-32
+                    font-bold text-[#2b2670] opacity-100"
+                  >
+                    Score: {score}
+                  </div>
+
                   <button
                     className={`text-white px-2 sm:px-4 py-1 sm:py-2 rounded-[3px] font-bold bg-purple-600 hover:bg-purple-700 text-white font-bold
                       text-md cursor-pointer w-fit self-center mb-2`}
@@ -333,11 +398,31 @@ function App({ initialTiles, noSpawnNewTile }: Props) {
                     Cast my score
                   </button>
 
+                  <button
+                    className={`text-white px-2 sm:px-4 py-1 sm:py-2 rounded-[3px] font-bold bg-purple-600 hover:bg-purple-700 text-white font-bold
+                      text-md cursor-pointer w-fit self-center mb-2`}
+                    type="button" 
+                    onClick={handleMint}  
+                    disabled={isPending || isSubmitting || isConfirming || hasMinted }                                     
+                  >
+                    {isSubmitting ? "Submitting..." : 
+                                    isPending ? "Pending..." : 
+                                    isConfirming ? "Confirming..." : 
+                                    hasMinted ? "Claimed!" :                                    
+                                    "Claim your NFT"}
+                  </button>
+                  {claimMessage && (
+                      <p className={`mt-4 ${claimMessage.includes('success') ? 'text-green-500' : 'text-red-400'}`}>
+                          {claimMessage}
+                      </p>
+                  )}
+                 
+
                   <NewGameButton
                     setGameOver={setGameOver}
                     setTilesArr={setTilesArr}
                     setScore={setScore}
-                    restartButtonRef={restartButtonRef}
+                    restartButtonRef={restartButtonRef}                    
                   />
                 </div>
               </div>
@@ -382,6 +467,7 @@ function App({ initialTiles, noSpawnNewTile }: Props) {
         </div>
         
       </div>
+
 
       <div className="mt-2 sm:mt-10 ">
         <div>
