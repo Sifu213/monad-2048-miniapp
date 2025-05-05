@@ -371,17 +371,16 @@ function App({ initialTiles, noSpawnNewTile }: Props) {
             <div className="flex space-x-1 float-right">
               <ScoreBox score={score} label="score" />
               <ScoreBox score={bestScore} label="best" />
-            </div>
-          </div>
-        </div>
-        <div className="flex mt-2 items-center justify-center">
-          
-          <NewGameButton
+              <NewGameButton
             setGameOver={setGameOver}
             setTilesArr={setTilesArr}
             setScore={setScore}
           />
+            </div>
+          </div>
+          
         </div>
+        
       </div>
 
       <div className="mt-2 sm:mt-10 ">

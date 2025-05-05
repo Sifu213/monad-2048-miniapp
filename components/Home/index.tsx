@@ -17,7 +17,7 @@ export default function Home() {
       <div className="w-full max-w-4xl space-y-6">
         
         <App />
-        <FarcasterActions />
+        
         <WalletActions />
       </div>
     </div>

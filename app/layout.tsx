@@ -8,7 +8,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Monad 2048 MiniApp ",
-  description: "A popular game adapted for Monad testnet",
+  description: "A popular game for Monad testnet",
 };
 
 export default function RootLayout({
