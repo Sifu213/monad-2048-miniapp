@@ -18,7 +18,7 @@ export default function Home() {
         
         <App />
         
-        <WalletActions />
+        
       </div>
     </div>
   );
