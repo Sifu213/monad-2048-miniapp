@@ -6,6 +6,8 @@ import useLocalStorage from './hooks/useLocalStorage';
 import { FarcasterActions } from "@/components/Home/FarcasterActions";
 import { APP_URL } from "@/lib/constants";
 import { useMiniAppContext } from "@/hooks/use-miniapp-context";
+import { upsertScore } from '@/lib/leaderboard';
+import LeaderboardModal from './components/LeaderboardModal';
 
 import { parseEther} from "viem";
 import { monadTestnet } from "viem/chains";
@@ -59,6 +61,10 @@ function App({ initialTiles, noSpawnNewTile }: Props) {
   const { isConnected, address, chainId } = useAccount();
   const { disconnect } = useDisconnect();
   const { switchChain } = useSwitchChain();
+
+  const userId = context?.user?.username || "toto";
+  const username = context?.user?.displayName || 'Anonymous';
+  const [showLeaderboard, setShowLeaderboard] = useState(false);
   
  
   const {
@@ -113,6 +119,14 @@ const link = "https://monad-testnet.socialscan.io/tx/" + hash
       if (!gameOver) {
         setHasMinted(false);
         setClaimMessage(null);
+      }
+    }, [gameOver]);
+
+
+    useEffect(() => {
+      if (gameOver && userId) {
+        upsertScore(String(userId), username, score)
+          .catch((err) => console.error('Leaderboard upsert failed:', err));
       }
     }, [gameOver]);
 
@@ -320,9 +334,9 @@ const link = "https://monad-testnet.socialscan.io/tx/" + hash
       <Transition.Root show={gameOver} as={Fragment}>
         <Dialog
           as="div"
-          className="fixed z-50 inset-0"
+          className="fixed z-20 inset-0"
           initialFocus={restartButtonRef}
-          onClose={setGameOver}
+          onClose={() => {}}
         >
           <div
             className="flex items-end justify-center 
@@ -340,11 +354,7 @@ const link = "https://monad-testnet.socialscan.io/tx/" + hash
               <Dialog.Overlay
                 className="fixed inset-0 bg-gray-300 
               bg-opacity-70 transition-opacity cursor-pointer"
-                onClick={() => {
-                  setGameOver(false);
-                  setTilesArr(initialTilesRandom());
-                  setScore(0);
-                }}
+                
               />
             </Transition.Child>
 
@@ -384,6 +394,14 @@ const link = "https://monad-testnet.socialscan.io/tx/" + hash
                   >
                     Score: {score}
                   </div>
+
+                  <button
+            className="w-1/2 text-white px-2 sm:px-4 py-1 sm:py-2 rounded-[3px] font-bold bg-purple-600 hover:bg-purple-700 text-white font-bold
+                      text-md cursor-pointer self-center mb-2"
+            onClick={() => setShowLeaderboard(true)}
+          >
+            Leaderboard
+          </button>
 
                   <button
                     className="w-1/2 text-white px-2 sm:px-4 py-1 sm:py-2 rounded-[3px] font-bold bg-purple-600 hover:bg-purple-700 text-white font-bold
@@ -466,11 +484,27 @@ const link = "https://monad-testnet.socialscan.io/tx/" + hash
           </div>
           
         </div>
+        <div className="justify-between items-center">
+        <div className="flex justify-center items-center mt-2">
+          <button
+            className="text-white px-2 sm:px-4 py-1 sm:py-2 rounded-[3px] font-bold bg-purple-600 hover:bg-purple-700 text-white font-bold
+                      text-md cursor-pointer inline-block h-full whitespace-normal text-center w-1/2"
+            onClick={() => setShowLeaderboard(true)}
+          >
+            Leaderboard
+          </button>
+        </div>
+     </div>
+     <LeaderboardModal
+       isOpen={showLeaderboard}
+       onClose={() => setShowLeaderboard(false)}
+     />
+
         
       </div>
 
 
-      <div className="w-full mt-2 sm:mt-10 ">
+      <div className="w-full mt-2 sm:mt-4 ">
         <div>
           <div
             className="absolute transform -translate-x-1/2 left-1/2 
@@ -519,6 +553,8 @@ const link = "https://monad-testnet.socialscan.io/tx/" + hash
           ))}
         </div>
       </div>
+
+      
       <footer className="w-full text-white mx-auto text-sm sm:text-md text-center test px-4 sm:px-0">
         2048 For Monad made by  
         <a href="https://warpcast.com/sifulam" className="underline font-semibold ml-1">
