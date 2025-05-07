@@ -325,8 +325,8 @@ const link = "https://monad-testnet.socialscan.io/tx/" + hash
           onClose={setGameOver}
         >
           <div
-            className={`flex items-end justify-center 
-           text-center sm:block sm:p-0`}
+            className="flex items-end justify-center 
+           text-center sm:block sm:p-0"
           >
             <Transition.Child
               as={Fragment}
@@ -338,8 +338,8 @@ const link = "https://monad-testnet.socialscan.io/tx/" + hash
               leaveTo="opacity-0"
             >
               <Dialog.Overlay
-                className={`fixed inset-0 bg-gray-300 
-              bg-opacity-70 transition-opacity cursor-pointer`}
+                className="fixed inset-0 bg-gray-300 
+              bg-opacity-70 transition-opacity cursor-pointer"
                 onClick={() => {
                   setGameOver(false);
                   setTilesArr(initialTilesRandom());
