@@ -3,41 +3,23 @@ import React, { useState, useEffect, Fragment, useRef } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import useMovement from './hooks/useMovement';
 import useLocalStorage from './hooks/useLocalStorage';
-import { FarcasterActions } from "@/components/Home/FarcasterActions";
 import { APP_URL } from "@/lib/constants";
 import { useMiniAppContext } from "@/hooks/use-miniapp-context";
 import { upsertScore } from '@/lib/leaderboard';
 import LeaderboardModal from './components/LeaderboardModal';
-
-import { parseEther} from "viem";
 import { monadTestnet } from "viem/chains";
 import {
-  useAccount,
-  useDisconnect,
-  useSendTransaction,
-  useSwitchChain,
-  useWriteContract ,
-  useWaitForTransactionReceipt,
+  useAccount, useDisconnect, useSendTransaction, useSwitchChain, useWriteContract, useWaitForTransactionReceipt,
 } from "wagmi";
 import { NFT_CONTRACT_ADDRESS, NFT_CONTRACT_ABI } from "./lib/constants";
-
-
 import {
-  TileMeta,
-  Tile,
-  spawnTileRandom,
-  friendlySpawnTile,
-  initialTilesRandom,
-  getTransition,
-  colorMapper,
-  removeMarkedTiles
+  TileMeta, Tile, spawnTileRandom, friendlySpawnTile, initialTilesRandom, getTransition, colorMapper, removeMarkedTiles
 } from './Tile';
 import validBoard from './Grid';
 import { flatIdx, matrixIndices } from './utils/coordinateUtils';
 import ScoreBox from './components/ScoreBox';
 import NewGameButton from './components/NewGameButton';
 import NewGameButton2 from './components/NewGameButton2';
-import MyToggle from './components/MyToggle';
 
 interface Props {
   initialTiles?: TileMeta[];
@@ -65,31 +47,29 @@ function App({ initialTiles, noSpawnNewTile }: Props) {
   const userId = context?.user?.username || "toto";
   const username = context?.user?.displayName || 'Anonymous';
   const [showLeaderboard, setShowLeaderboard] = useState(false);
-  
- 
+
   const {
     data: hash, // infos sur la transaction envoyée, ex { hash }      
     isPending,       // true pendant la demande de signature (wallet)
     isSuccess,       // true si la TX a bien été envoyée, en attente de minage
     writeContract,           // la fonction qui déclenche l'envoi
     error,
-} = useWriteContract();
+  } = useWriteContract();
 
-const { isLoading: isConfirming, isSuccess: isConfirmed } =
-useWaitForTransactionReceipt({
-  hash,
-});
+  const { isLoading: isConfirming, isSuccess: isConfirmed } =
+    useWaitForTransactionReceipt({
+      hash,
+    });
 
-const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-const [claimMessage, setClaimMessage] = useState<string | null>(null);
-const [hasMinted, setHasMinted] = useState(false);
-const link = "https://monad-testnet.socialscan.io/tx/" + hash
-
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [claimMessage, setClaimMessage] = useState<string | null>(null);
+  const [hasMinted, setHasMinted] = useState(false);
+  const link = "https://monad-testnet.socialscan.io/tx/" + hash
 
   const handleMint = async () => {
     if (!address) {
-        setClaimMessage('Please connect your wallet.');
-        return;
+      setClaimMessage('Please connect your wallet.');
+      return;
     }
     if (chainId !== monadTestnet.id) {
       await switchChain?.({ chainId: monadTestnet.id });
@@ -97,38 +77,38 @@ const link = "https://monad-testnet.socialscan.io/tx/" + hash
 
     setIsSubmitting(true);
     try {
-            await writeContract({
-                address: NFT_CONTRACT_ADDRESS,
-                abi: NFT_CONTRACT_ABI,
-                functionName: 'mintNFT',
-                args: [address, score],
-            });
+      await writeContract({
+        address: NFT_CONTRACT_ADDRESS,
+        abi: NFT_CONTRACT_ABI,
+        functionName: 'mintNFT',
+        args: [address, score],
+      });
 
-            console.log('Transaction sent');
-            setHasMinted(true);
+      console.log('Transaction sent');
+      setHasMinted(true);
 
-        } catch (err) {
-            console.error('Mint transaction failed:', err);
-            setClaimMessage('Minting failed. Please try again.');
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
+    } catch (err) {
+      console.error('Mint transaction failed:', err);
+      setClaimMessage('Minting failed. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
-    useEffect(() => {
-      if (!gameOver) {
-        setHasMinted(false);
-        setClaimMessage(null);
-      }
-    }, [gameOver]);
+  useEffect(() => {
+    if (!gameOver) {
+      setHasMinted(false);
+      setClaimMessage(null);
+    }
+  }, [gameOver]);
 
 
-    useEffect(() => {
-      if (gameOver && userId) {
-        upsertScore(String(userId), username, score)
-          .catch((err) => console.error('Leaderboard upsert failed:', err));
-      }
-    }, [gameOver]);
+  useEffect(() => {
+    if (gameOver && userId) {
+      upsertScore(String(userId), username, score)
+        .catch((err) => console.error('Leaderboard upsert failed:', err));
+    }
+  }, [gameOver]);
 
   type Direction = 'UP' | 'DOWN' | 'LEFT' | 'RIGHT';
   function slideHandler(dir: Direction) {
@@ -336,7 +316,7 @@ const link = "https://monad-testnet.socialscan.io/tx/" + hash
           as="div"
           className="fixed z-20 inset-0"
           initialFocus={restartButtonRef}
-          onClose={() => {}}
+          onClose={() => { }}
         >
           <div
             className="flex items-end justify-center 
@@ -354,7 +334,7 @@ const link = "https://monad-testnet.socialscan.io/tx/" + hash
               <Dialog.Overlay
                 className="fixed inset-0 bg-gray-300 
               bg-opacity-70 transition-opacity cursor-pointer"
-                
+
               />
             </Transition.Child>
 
@@ -396,16 +376,16 @@ const link = "https://monad-testnet.socialscan.io/tx/" + hash
                   </div>
 
                   <button
-            className="w-1/2 text-white px-2 sm:px-4 py-1 sm:py-2 rounded-[3px] font-bold bg-purple-600 hover:bg-purple-700 text-white font-bold
+                    className="w-1/2 text-white px-2 sm:px-4 py-1 sm:py-2 rounded-[3px] font-bold bg-purple-600 hover:bg-purple-700 text-white font-bold
                       text-md cursor-pointer self-center mb-2"
-            onClick={() => setShowLeaderboard(true)}
-          >
-            Leaderboard
-          </button>
+                    onClick={() => setShowLeaderboard(true)}
+                  >
+                    Leaderboard
+                  </button>
 
                   <button
                     className="w-1/2 text-white px-2 sm:px-4 py-1 sm:py-2 rounded-[3px] font-bold bg-purple-600 hover:bg-purple-700 text-white font-bold
-                      text-md cursor-pointer self-center mb-2"
+              text-md cursor-pointer self-center mb-2"
                     type="button"
                     onClick={() =>
                       actions?.composeCast({
@@ -419,29 +399,28 @@ const link = "https://monad-testnet.socialscan.io/tx/" + hash
 
                   <button
                     className="w-1/2 text-white px-2 sm:px-4 py-1 sm:py-2 rounded-[3px] font-bold bg-purple-600 hover:bg-purple-700 text-white font-bold
-                      text-md cursor-pointer self-center mb-2"
-                    type="button" 
-                    onClick={handleMint}  
-                    disabled={isPending || isSubmitting || isConfirming || hasMinted }                                     
+              text-md cursor-pointer self-center mb-2"
+                    type="button"
+                    onClick={handleMint}
+                    disabled={isPending || isSubmitting || isConfirming || hasMinted}
                   >
-                    {isSubmitting ? "Submitting..." : 
-                                    isPending ? "Pending..." : 
-                                    isConfirming ? "Confirming..." : 
-                                    hasMinted ? "Claimed!" :                                    
-                                    "Claim your NFT"}
+                    {isSubmitting ? "Submitting..." :
+                      isPending ? "Pending..." :
+                        isConfirming ? "Confirming..." :
+                          hasMinted ? "Claimed!" :
+                            "Claim your NFT"}
                   </button>
                   {claimMessage && (
-                      <p className={`mt-4 ${claimMessage.includes('success') ? 'text-green-500' : 'text-red-400'}`}>
-                          {claimMessage}
-                      </p>
+                    <p className={`mt-4 ${claimMessage.includes('success') ? 'text-green-500' : 'text-red-400'}`}>
+                      {claimMessage}
+                    </p>
                   )}
-                 
 
                   <NewGameButton2
                     setGameOver={setGameOver}
                     setTilesArr={setTilesArr}
                     setScore={setScore}
-                    restartButtonRef={restartButtonRef}                    
+                    restartButtonRef={restartButtonRef}
                   />
                 </div>
               </div>
@@ -451,56 +430,51 @@ const link = "https://monad-testnet.socialscan.io/tx/" + hash
       </Transition.Root>
       <div className="w-full mt-2 sm:px-0">
         <div className="flex justify-between items-center p-2 rounded-[20px] bg-[#2b2670]">
-          
 
           {context?.user?.pfpUrl && (
-              <img
-                src={context?.user?.pfpUrl}
-                className="w-14 h-14 rounded-full"
-                alt="User Profile Picture"
-                width={56}
-                height={56}
-              />
-            )}
-            <div className="flex flex-col justify-start items-start space-y-2">
-              <p className="text-sm text-left">
-                
-                <span className="text-white rounded-md p-[4px] text-l font-bold">
-                  {context?.user?.displayName}
-                </span>
-              </p>
-            </div>
+            <img
+              src={context?.user?.pfpUrl}
+              className="w-14 h-14 rounded-full"
+              alt="User Profile Picture"
+              width={56}
+              height={56}
+            />
+          )}
+          <div className="flex flex-col justify-start items-start space-y-2">
+            <p className="text-sm text-left">
+
+              <span className="text-white rounded-md p-[4px] text-l font-bold">
+                {context?.user?.displayName}
+              </span>
+            </p>
+          </div>
 
           <div className="inline-block text-right">
             <div className="flex space-x-1 float-right">
               <ScoreBox score={score} label="score" />
               <ScoreBox score={bestScore} label="best" />
-              <NewGameButton
-            setGameOver={setGameOver}
-            setTilesArr={setTilesArr}
-            setScore={setScore}
-          />
+              <NewGameButton setGameOver={setGameOver} setTilesArr={setTilesArr} setScore={setScore} />
             </div>
           </div>
-          
+
         </div>
         <div className="justify-between items-center">
-        <div className="flex justify-center items-center mt-2">
-          <button
-            className="text-white px-2 sm:px-4 py-1 sm:py-2 rounded-[3px] font-bold bg-purple-600 hover:bg-purple-700 text-white font-bold
+          <div className="flex justify-center items-center mt-2">
+            <button
+              className="text-white px-2 sm:px-4 py-1 sm:py-2 rounded-[3px] font-bold bg-purple-600 hover:bg-purple-700 text-white font-bold
                       text-md cursor-pointer inline-block h-full whitespace-normal text-center w-1/2"
-            onClick={() => setShowLeaderboard(true)}
-          >
-            Leaderboard
-          </button>
+              onClick={() => setShowLeaderboard(true)}
+            >
+              Leaderboard
+            </button>
+          </div>
         </div>
-     </div>
-     <LeaderboardModal
-       isOpen={showLeaderboard}
-       onClose={() => setShowLeaderboard(false)}
-     />
+        <LeaderboardModal
+          isOpen={showLeaderboard}
+          onClose={() => setShowLeaderboard(false)}
+        />
 
-        
+
       </div>
 
 
@@ -508,7 +482,7 @@ const link = "https://monad-testnet.socialscan.io/tx/" + hash
         <div>
           <div
             className="absolute transform -translate-x-1/2 left-1/2 
-            grid-border rounded-md bg-[#2b2670]"           
+            grid-border rounded-md bg-[#2b2670]"
           />
         </div>
 
@@ -554,11 +528,11 @@ const link = "https://monad-testnet.socialscan.io/tx/" + hash
         </div>
       </div>
 
-      
+
       <footer className="w-full text-white mx-auto text-sm sm:text-md text-center test px-4 sm:px-0">
-        2048 For Monad made by  
+        2048 For Monad made by
         <a href="https://warpcast.com/sifulam" className="underline font-semibold ml-1">
-           Sifu_lam
+          Sifu_lam
         </a>
         .
       </footer>

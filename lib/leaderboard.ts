@@ -6,16 +6,13 @@ export type LeaderboardEntry = {
   top_score: number;
 };
 
-/**
- * Insère le joueur s’il n’existe pas, ou met à jour son top_score
- * uniquement si `score` est supérieur à l’existant.
- */
+
 export async function upsertScore(
   user_id: string,
   username: string,
   score: number
 ): Promise<void> {
-  // 1) Récupère le top_score actuel si présent
+
   const { data: existing, error: selectError } = await supabase
     .from('leaderboard')
     .select('top_score')
