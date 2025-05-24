@@ -531,7 +531,7 @@ function App({ initialTiles, noSpawnNewTile }: Props) {
 
       <footer className="w-full text-white mx-auto text-sm sm:text-md text-center test px-4 sm:px-0">
         2048 For Monad made by
-        <a href="https://warpcast.com/sifulam" className="underline font-semibold ml-1">
+        <a href="https://farcaster.xyz/sifulam" className="underline font-semibold ml-1">
           Sifu_lam
         </a>
         .

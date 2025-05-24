@@ -74,7 +74,7 @@ export default function LeaderboardModal({
                       <span>
                         {i + 1}.{' '}
                         <a
-                          href={`https://warpcast.com/${e.user_id}`}
+                          href={`https://farcaster.xyz/${e.user_id}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="underline"
